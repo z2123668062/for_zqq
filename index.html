@@ -1,221 +1,341 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>圣诞互动小链接</title>
-  <style>
-    body { 
-      background: linear-gradient(135deg, #d7263d 0%, #1b1b3a 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-    /* 雪花动画 */
-    .snow {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    h1 {
-      color: #fffbe7;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 8px #333;
-      font-family: 'Segoe Script', 'Comic Sans MS', cursive;
-    }
-    p { 
-      font-size: 22px; 
-      margin-bottom: 30px; 
-      text-align: center;
-      color: #fffbe7;
-      font-family: 'Segoe Script', 'Comic Sans MS', cursive;
-      text-shadow: 1px 1px 6px #333;
-    }
-    .tree-container {
-      margin: 30px 0 20px 0;
-      z-index: 1;
-    }
-    .btn-group { 
-      display: flex; 
-      gap: 20px; 
-      width: 100%; 
-      max-width: 320px;
-      justify-content: center;
-      z-index: 2;
-    }
-    .btn {
-      padding: 15px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 18px;
-      cursor: pointer;
-      font-family: 'Segoe Script', 'Comic Sans MS', cursive;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      transition: transform 0.3s, opacity 0.3s, display 0.3s;
-    }
-    .btn-accept { 
-      background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
-      color: #fff; 
-      min-width: 120px;
-      font-weight: bold;
-      border: 2px solid #fffbe7;
-    }
-    .btn-reject { 
-      background: linear-gradient(90deg, #ff6b6b 0%, #ffd86b 100%);
-      color: #fff; 
-      min-width: 120px;
-      font-weight: bold;
-      border: 2px solid #fffbe7;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>祝朱青青圣诞快乐</title>
+    <meta name="description" content="圣诞快乐，朱青青！">
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'ZCOOL KuaiLe', 'Pacifico', 'Microsoft YaHei', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .snowflake {
+            position: fixed;
+            color: #fff;
+            font-size: 14px;
+            opacity: 0.85;
+            user-select: none;
+            pointer-events: none;
+            z-index: 100;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.85;
+            }
+            90% {
+                opacity: 0.85;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        .greeting {
+            color: #fff;
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 24px;
+            text-shadow: 0 0 12px #ffd700, 0 0 24px #ffd700;
+            z-index: 10;
+            letter-spacing: 2px;
+        }
+        .greeting h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #ffd700;
+            font-family: 'Pacifico', 'ZCOOL KuaiLe', cursive, sans-serif;
+        }
+        .greeting p {
+            font-size: 1.4rem;
+            color: #f8f8f8;
+            margin-bottom: 0.5em;
+        }
+        .greeting .sub {
+            font-size: 1.1rem;
+            color: #ffe4e1;
+            margin-top: 0.5em;
+        }
+        .christmas-card {
+            background: rgba(255,255,255,0.12);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1.5px solid rgba(255,255,255,0.18);
+            padding: 32px 18px 24px 18px;
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 350px;
+            width: 90vw;
+        }
+        .tree-star {
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-bottom: 30px solid #ffd700;
+            margin: 0 auto;
+            position: relative;
+            top: -10px;
+            filter: drop-shadow(0 0 8px #ffd700);
+        }
+        .tree-star::after {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 10px;
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 30px solid #ffd700;
+        }
+        .christmas-tree {
+            position: relative;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+        .tree-top {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 90px solid #228b22;
+            margin: 0 auto;
+            position: relative;
+        }
+        .tree-top::before {
+            content: "";
+            position: absolute;
+            top: 22px;
+            left: -45px;
+            width: 0;
+            height: 0;
+            border-left: 45px solid transparent;
+            border-right: 45px solid transparent;
+            border-bottom: 68px solid #2e8b57;
+        }
+        .tree-top::after {
+            content: "";
+            position: absolute;
+            top: 50px;
+            left: -30px;
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 45px solid #32cd32;
+        }
+        .tree-trunk {
+            width: 20px;
+            height: 40px;
+            background-color: #8b4513;
+            margin: 0 auto;
+            border-radius: 4px;
+        }
+        .ornament {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            animation: blink 2s infinite alternate;
+            border: 2px solid #fff8;
+        }
+        .ornament1 { top: 18px; left: 18px; background: #ff0000; }
+        .ornament2 { top: 36px; left: -28px; background: #00bfff; }
+        .ornament3 { top: 54px; left: 38px; background: #ffff00; }
+        .ornament4 { top: 70px; left: -10px; background: #ff69b4; }
+        .ornament5 { top: 60px; left: 60px; background: #00ff99; }
+        @keyframes blink {
+            0% { transform: scale(1); box-shadow: 0 0 5px #fff; }
+            100% { transform: scale(1.2); box-shadow: 0 0 15px #fff; }
+        }
+        .apple {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            background-color: #d22b2b;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(.68,-0.55,.27,1.55);
+            box-shadow: 0 0 18px #d22b2b, 0 0 32px #fff2;
+            margin: 0 auto;
+        }
+        .apple::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 25px;
+            width: 18px;
+            height: 12px;
+            background-color: #2e8b57;
+            border-radius: 50% 50% 0 0;
+        }
+        .apple::after {
+            content: "";
+            position: absolute;
+            top: -16px;
+            left: 18px;
+            width: 24px;
+            height: 14px;
+            background-color: #32cd32;
+            border-radius: 0 50% 0 50%;
+            transform: rotate(-30deg);
+        }
+        .apple:hover {
+            transform: scale(1.13) rotate(-6deg);
+            box-shadow: 0 0 32px #ff0000, 0 0 48px #fff4;
+        }
+        .lights {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 18px 0 8px 0;
+        }
+        .light {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fff, #ffd700 60%);
+            box-shadow: 0 0 12px #ffd700, 0 0 24px #fff8;
+            animation: twinkle 1.2s infinite alternate;
+        }
+        .light2 { background: linear-gradient(135deg, #fff, #00eaff 60%); animation-delay: 0.3s; }
+        .light3 { background: linear-gradient(135deg, #fff, #ff69b4 60%); animation-delay: 0.6s; }
+        .light4 { background: linear-gradient(135deg, #fff, #00ff99 60%); animation-delay: 0.9s; }
+        @keyframes twinkle {
+            0% { opacity: 1; box-shadow: 0 0 12px #ffd700; }
+            100% { opacity: 0.5; box-shadow: 0 0 24px #fff8; }
+        }
+        .footer {
+            color: #fff8;
+            font-size: 1rem;
+            text-align: center;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        @media (max-width: 600px) {
+            .greeting h1 { font-size: 2rem; }
+            .greeting p { font-size: 1.1rem; }
+            .christmas-card { padding: 18px 6px 14px 6px; max-width: 98vw; }
+            .tree-top { border-left: 38px solid transparent; border-right: 38px solid transparent; border-bottom: 60px solid #228b22; }
+            .tree-top::before { left: -28px; border-left: 28px solid transparent; border-right: 28px solid transparent; border-bottom: 38px solid #2e8b57; }
+            .tree-top::after { left: -18px; border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 22px solid #32cd32; }
+            .tree-star, .tree-star::after { border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 18px solid #ffd700; border-top: 18px solid #ffd700; }
+            .apple { width: 48px; height: 48px; }
+        }
+    </style>
 </head>
 <body>
-  <!-- 雪花 SVG -->
-  <svg class="snow"></svg>
+    <div class="greeting">
+        <h1>朱青青</h1>
+        <p>祝你圣诞快乐 🎄 平安喜乐 🎅</p>
+        <div class="sub">愿你在新的一年里，心想事成，幸福常伴！</div>
+    </div>
+        <div class="christmas-main">
+            <div class="apple-svg-wrap">
+                <svg viewBox="0 0 200 220" width="200" height="220" class="apple-svg">
+                    <!-- 阴影 -->
+                    <ellipse cx="100" cy="210" rx="50" ry="10" fill="#000" opacity="0.12"/>
+                    <!-- 苹果主体 -->
+                    <path d="M100 60 C 60 60, 30 120, 60 170 Q 100 220, 140 170 C 170 120, 140 60, 100 60 Z" fill="#e53935" stroke="#a31515" stroke-width="3"/>
+                    <!-- 高光 -->
+                    <ellipse cx="80" cy="110" rx="18" ry="10" fill="#fff" opacity="0.18"/>
+                    <ellipse cx="120" cy="90" rx="10" ry="5" fill="#fff" opacity="0.13"/>
+                    <!-- 果蒂 -->
+                    <rect x="93" y="45" width="14" height="28" rx="7" fill="#795548" stroke="#5d4037" stroke-width="2" transform="rotate(-15 100 60)"/>
+                    <!-- 叶子 -->
+                    <ellipse cx="120" cy="50" rx="18" ry="8" fill="#43a047" stroke="#2e7d32" stroke-width="2" transform="rotate(-20 120 50)"/>
+                    <ellipse cx="120" cy="50" rx="8" ry="3" fill="#fff" opacity="0.18" transform="rotate(-20 120 50)"/>
+                    <!-- 叶脉 -->
+                    <path d="M120 50 Q 125 45, 130 50" stroke="#2e7d32" stroke-width="1" fill="none"/>
+                    <path d="M120 50 Q 115 55, 110 50" stroke="#2e7d32" stroke-width="1" fill="none"/>
+                </svg>
+            </div>
+        </div>
+    <div class="footer">Merry Christmas &copy; 2025 | 朱青青专属祝福</div>
 
-
-  <h1>🎄 Merry Christmas! 🎄</h1>
-  <p style="font-size: 1.3rem; margin-bottom: 18px; color: #fffbe7; font-family: 'Segoe Script', 'Comic Sans MS', cursive; text-shadow: 1px 1px 6px #333;">愿你被温柔以待，心想事成，圣诞快乐！</p>
-  <div class="tree-container">
-    <canvas id="xmasTree" width="320" height="420" style="background:transparent; display:block;"></canvas>
-  </div>
-
-  <script>
-    // 雪花生成
-    function createSnow() {
-      const svg = document.querySelector('.snow');
-      svg.innerHTML = '';
-      for (let i = 0; i < 40; i++) {
-        const x = Math.random() * window.innerWidth;
-        const y = Math.random() * window.innerHeight;
-        const r = Math.random() * 4 + 2;
-        const opacity = Math.random() * 0.5 + 0.5;
-        svg.innerHTML += `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity="${opacity}"/>`;
+    <style>
+      .christmas-main {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
       }
-    }
-    createSnow();
-    setInterval(createSnow, 1200);
-
-    // 圣诞树动画
-    function drawTree() {
-      const canvas = document.getElementById('xmasTree');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 树干
-      ctx.save();
-      ctx.beginPath();
-      ctx.fillStyle = '#a0522d';
-      ctx.strokeStyle = '#6e2c00';
-      ctx.lineWidth = 4;
-      ctx.moveTo(140, 370);
-      ctx.lineTo(180, 370);
-      ctx.lineTo(180, 410);
-      ctx.lineTo(140, 410);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
-
-      // 树层
-      const layers = [
-        { y: 340, w: 180, h: 60, color: '#229954' },
-        { y: 260, w: 220, h: 80, color: '#27ae60' },
-        { y: 170, w: 260, h: 100, color: '#2ecc40' }
-      ];
-      layers.forEach((layer, i) => {
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(160, layer.y);
-        ctx.lineTo(160 + layer.w / 2, layer.y + layer.h);
-        ctx.lineTo(160 - layer.w / 2, layer.y + layer.h);
-        ctx.closePath();
-        ctx.fillStyle = layer.color;
-        ctx.shadowColor = '#145a32';
-        ctx.shadowBlur = 18 - i * 4;
-        ctx.fill();
-        ctx.restore();
-      });
-
-      // 星星
-      function drawStar(cx, cy, spikes, outerR, innerR, color) {
-        let rot = Math.PI / 2 * 3;
-        let x = cx;
-        let y = cy;
-        let step = Math.PI / spikes;
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(cx, cy - outerR);
-        for (let i = 0; i < spikes; i++) {
-          x = cx + Math.cos(rot) * outerR;
-          y = cy + Math.sin(rot) * outerR;
-          ctx.lineTo(x, y);
-          rot += step;
-          x = cx + Math.cos(rot) * innerR;
-          y = cy + Math.sin(rot) * innerR;
-          ctx.lineTo(x, y);
-          rot += step;
+            .apple-svg-wrap {
+                width: 220px;
+                max-width: 98vw;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+            }
+            .apple-svg {
+                width: 100%;
+                height: auto;
+                display: block;
+                background: none;
+            }
+            @media (max-width: 600px) {
+                .apple-svg-wrap { width: 98vw; }
+                .apple-svg { min-width: 0; }
+            }
+    </style>
+    <script>
+        // 生成单个雪花
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            snowflake.textContent = Math.random() > 0.5 ? '❄️' : '✻';
+            // 随机位置、大小、动画时长
+            const size = Math.random() * 12 + 8;
+            const left = Math.random() * 100;
+            const animationDuration = Math.random() * 8 + 8;
+            const delay = Math.random() * 10;
+            snowflake.style.fontSize = `${size}px`;
+            snowflake.style.left = `${left}vw`;
+            snowflake.style.animationDuration = `${animationDuration}s`;
+            snowflake.style.animationDelay = `${delay}s`;
+            document.body.appendChild(snowflake);
+            setTimeout(() => {
+                snowflake.remove();
+                createSnowflake();
+            }, (animationDuration + delay) * 1000);
         }
-        ctx.lineTo(cx, cy - outerR);
-        ctx.closePath();
-        ctx.fillStyle = color;
-        ctx.shadowColor = '#ffe066';
-        ctx.shadowBlur = 18;
-        ctx.fill();
-        ctx.restore();
-      }
-      drawStar(160, 150, 5, 22, 10, '#ffe066');
-
-      // 彩球动画
-      const now = Date.now() / 600;
-      const balls = [
-        { x: 160, y: 200, r: 10, color: '#e74c3c' },
-        { x: 130, y: 250, r: 8, color: '#f9ca24' },
-        { x: 190, y: 250, r: 8, color: '#00bfff' },
-        { x: 110, y: 320, r: 7, color: '#ff6b6b' },
-        { x: 210, y: 320, r: 7, color: '#fffbe7' },
-        { x: 160, y: 300, r: 9, color: '#e67e22' }
-      ];
-      balls.forEach((b, i) => {
-        ctx.save();
-        ctx.beginPath();
-        let dy = Math.sin(now + i) * 6;
-        ctx.arc(b.x, b.y + dy, b.r, 0, Math.PI * 2);
-        ctx.fillStyle = b.color;
-        ctx.shadowColor = '#fff';
-        ctx.shadowBlur = 10;
-        ctx.fill();
-        ctx.restore();
-      });
-
-      // 灯串动画
-      for (let i = 0; i < 18; i++) {
-        let angle = Math.PI * (0.2 + 0.6 * (i / 18));
-        let x = 160 + Math.cos(angle) * (90 + 10 * Math.sin(now + i));
-        let y = 220 + Math.sin(angle) * (60 + 10 * Math.cos(now + i));
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = `hsl(${(now * 40 + i * 30) % 360},90%,70%)`;
-        ctx.shadowColor = '#fff';
-        ctx.shadowBlur = 8;
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-    function animateTree() {
-      drawTree();
-      requestAnimationFrame(animateTree);
-    }
-    animateTree();
-  </script>
+        // 页面加载后生成固定数量的雪花
+        window.onload = function() {
+            const snowCount = 60;
+            for (let i = 0; i < snowCount; i++) {
+                createSnowflake();
+            }
+            // 平安果点击交互
+            document.querySelector('.apple-svg').addEventListener('click', function() {
+                alert('愿你平安喜乐，心想事成！');
+            });
+        };
+    </script>
 </body>
 </html>
