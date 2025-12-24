@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喜欢你很久了</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+        }
+        body {
+            background-color: #fdeef4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        /* 核心修改：限定图片尺寸 */
+        .love-img {
+            max-width: 500px;    /* 图片最大宽度 */
+            max-height: 400px;   /* 图片最大高度 */
+            width: 100%;         /* 响应式适配容器宽度 */
+            height: auto;        /* 保持图片宽高比 */
+            object-fit: contain; /* 完整显示图片，不拉伸变形 */
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(255, 105, 180, 0.2);
+            margin-bottom: 30px;
+        }
+        .question {
+            font-size: 28px;
+            color: #e63946;
+            margin-bottom: 40px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-group {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn {
+            padding: 15px 35px;
+            font-size: 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-yes {
+            background-color: #ff6b8b;
+            color: white;
+        }
+        .btn-yes:hover {
+            background-color: #ff4769;
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(255, 107, 139, 0.3);
+        }
+        .btn-no {
+            background-color: #8884d8;
+            color: white;
+            position: relative;
+        }
+        .btn-no:hover {
+            background-color: #6a67ce;
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(136, 132, 216, 0.3);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 50px 80px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: pop 0.5s ease;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .love-text {
+            font-size: 32px;
+            color: #ff3366;
+            margin-bottom: 20px;
+        }
+        .heart {
+            color: #ff3366;
+            animation: beat 1.5s infinite;
+        }
+        @keyframes beat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 本地图片：替换src为你的图片路径（相对路径或绝对路径） -->
+        <img src="E:\for_zqq1\1\下载.png" alt="表白图片" class="love-img">
+        <div class="question">你愿意做我女朋友吗？</div>
+        <div class="btn-group">
+            <button class="btn btn-yes" onclick="agree()">愿意</button>
+            <button class="btn btn-no" onclick="refuse()" id="noBtn">不愿意</button>
+        </div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="love-text"><span class="heart">❤️</span> 我们要永远在一起 <span class="heart">❤️</span></div>
+            <p style="font-size: 20px; color: #333;">你永远都是我最最最爱的朱青青</p>
+        </div>
+    </div>
+
+    <script>
+        let refuseCount = 0; // 记录拒绝次数
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.querySelector('.btn-yes');
+        const modal = document.getElementById('modal');
+
+        // 点击愿意
+        function agree() {
+            modal.style.display = 'flex';
+        }
+
+        // 点击不愿意
+        function refuse() {
+            refuseCount++;
+            const maxFirstMove = 5; // 第一次移动的最大次数（3-5次随机）
+            const maxDisappear = 10; // 按钮消失的总次数（3-5+3-5）
+
+            // 不愿意按钮缩小，愿意按钮增大
+            noBtn.style.transform = `scale(${0.9 - refuseCount * 0.05})`;
+            yesBtn.style.transform = `scale(${1.1 + refuseCount * 0.05})`;
+
+            // 第一次移动：3-5次后随机位置
+            if (refuseCount >= 3 && refuseCount <= maxFirstMove && refuseCount % 3 === 0) {
+                randomPosition();
+            }
+
+            // 第二次移动：6-8次后再次随机位置
+            if (refuseCount >= 6 && refuseCount <= 8 && refuseCount % 3 === 0) {
+                randomPosition();
+            }
+
+            // 9-10次后按钮消失
+            if (refuseCount >= 9) {
+                noBtn.style.display = 'none';
+                yesBtn.style.transform = 'scale(1.3)'; // 最终放大愿意按钮
+            }
+        }
+
+        // 随机生成按钮位置
+        function randomPosition() {
+            const btnGroup = document.querySelector('.btn-group');
+            const groupRect = btnGroup.getBoundingClientRect();
+            
+            // 随机X坐标（在按钮组内）
+            const randomX = Math.floor(Math.random() * (groupRect.width - 120)) + 20;
+            // 随机Y坐标（上下浮动）
+            const randomY = Math.floor(Math.random() * 100) - 50;
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+        }
+
+        // 点击弹窗背景关闭弹窗
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
