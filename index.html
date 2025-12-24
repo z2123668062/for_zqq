@@ -3,102 +3,155 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>互动小链接</title>
+  <title>圣诞互动小链接</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
-      background: #fff; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      min-height: 100vh; 
+      background: linear-gradient(135deg, #d7263d 0%, #1b1b3a 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
+      position: relative;
+      overflow: hidden;
     }
-    .img-container { margin: 20px 0; }
-    .img-container img { 
-      max-width: 100%; 
-      border-radius: 10px; 
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    /* 雪花动画 */
+    .snow {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    h1 {
+      color: #fffbe7;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 8px #333;
+      font-family: 'Segoe Script', 'Comic Sans MS', cursive;
     }
     p { 
-      font-size: 20px; 
+      font-size: 22px; 
       margin-bottom: 30px; 
       text-align: center;
+      color: #fffbe7;
+      font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+      text-shadow: 1px 1px 6px #333;
+    }
+    .tree-container {
+      margin: 30px 0 20px 0;
+      z-index: 1;
     }
     .btn-group { 
       display: flex; 
       gap: 20px; 
       width: 100%; 
-      max-width: 300px;
-      justify-content: center; /* 按钮消失后自动居中 */
+      max-width: 320px;
+      justify-content: center;
+      z-index: 2;
     }
     .btn {
       padding: 15px 0;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
-      transition: transform 0.3s ease, opacity 0.3s ease, display 0.3s ease;
+      font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: transform 0.3s, opacity 0.3s, display 0.3s;
     }
     .btn-accept { 
-      background: #ff6b6b; 
-      color: #fff; 
-      min-width: 120px; /* 保证按钮最小宽度 */
-    }
-    .btn-reject { 
-      background: #4ecdc4; 
+      background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
       color: #fff; 
       min-width: 120px;
+      font-weight: bold;
+      border: 2px solid #fffbe7;
+    }
+    .btn-reject { 
+      background: linear-gradient(90deg, #ff6b6b 0%, #ffd86b 100%);
+      color: #fff; 
+      min-width: 120px;
+      font-weight: bold;
+      border: 2px solid #fffbe7;
     }
   </style>
 </head>
 <body>
-  <div class="img-container">
-    <!-- 替换成你选的可爱图片链接 -->
-    <img src="https://tse1-mm.cn.bing.net/th/id/OIP-C.__KNATLhAk72ad49CCuQPgHaEJ?o=7&cb=ucfimg2rm=3&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3" alt="互动图片" />
+  <!-- 雪花 SVG -->
+  <svg class="snow"></svg>
+
+  <h1>🎄 圣诞快乐！🎅</h1>
+  <div class="tree-container">
+    <!-- 圣诞树 SVG -->
+    <svg width="180" height="220" viewBox="0 0 180 220">
+      <!-- 星星 -->
+      <polygon points="90,20 95,35 110,35 98,45 103,60 90,50 77,60 82,45 70,35 85,35" fill="#ffe066" stroke="#e1b12c" stroke-width="2"/>
+      <!-- 树层1 -->
+      <polygon points="90,60 140,110 40,110" fill="#2ecc40" stroke="#145a32" stroke-width="3"/>
+      <!-- 树层2 -->
+      <polygon points="90,90 130,150 50,150" fill="#27ae60" stroke="#145a32" stroke-width="3"/>
+      <!-- 树层3 -->
+      <polygon points="90,130 120,190 60,190" fill="#229954" stroke="#145a32" stroke-width="3"/>
+      <!-- 树干 -->
+      <rect x="80" y="190" width="20" height="25" rx="5" fill="#a0522d" stroke="#6e2c00" stroke-width="2"/>
+      <!-- 彩球 -->
+      <circle cx="110" cy="100" r="7" fill="#e74c3c" stroke="#fff" stroke-width="2"/>
+      <circle cx="70" cy="120" r="6" fill="#f9ca24" stroke="#fff" stroke-width="2"/>
+      <circle cx="120" cy="170" r="6" fill="#00bfff" stroke="#fff" stroke-width="2"/>
+      <circle cx="60" cy="170" r="5" fill="#ff6b6b" stroke="#fff" stroke-width="2"/>
+      <circle cx="90" cy="145" r="5" fill="#fffbe7" stroke="#fff" stroke-width="2"/>
+    </svg>
   </div>
-  <p>你愿意成为我的女朋友吗？</p>
+  <p>圣诞夜，愿你成为我的女朋友吗？</p>
   <div class="btn-group">
-    <button id="btnAccept" class="btn btn-accept">可以</button>
-    <button id="btnReject" class="btn btn-reject">不要</button>
+    <button id="btnAccept" class="btn btn-accept">愿意！🎁</button>
+    <button id="btnReject" class="btn btn-reject">不要~⛄</button>
   </div>
 
   <script>
+    // 雪花生成
+    function createSnow() {
+      const svg = document.querySelector('.snow');
+      svg.innerHTML = '';
+      for (let i = 0; i < 40; i++) {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        const r = Math.random() * 4 + 2;
+        const opacity = Math.random() * 0.5 + 0.5;
+        svg.innerHTML += `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity="${opacity}"/>`;
+      }
+    }
+    createSnow();
+    setInterval(createSnow, 1200);
+
     const btnAccept = document.getElementById('btnAccept');
     const btnReject = document.getElementById('btnReject');
-    let clickCount = 0; // 记录“不要”按钮的点击次数
-    const maxClicks = 3; // 最大点击次数（循环3次）
+    let clickCount = 0;
+    const maxClicks = 3;
 
-    // 点击“不要”的逻辑：循环缩放3次后消失
     btnReject.addEventListener('click', () => {
       if (clickCount < maxClicks) {
         clickCount++;
-        // 每次点击的缩放幅度递增（更有渐变感）
-        const acceptScale = 1.3 + (clickCount * 0.2); // 1.3 → 1.5 → 1.7
-        const rejectScale = 0.8 - (clickCount * 0.1); // 0.8 → 0.7 → 0.6
+        const acceptScale = 1.3 + (clickCount * 0.2);
+        const rejectScale = 0.8 - (clickCount * 0.1);
 
         btnAccept.style.transform = `scale(${acceptScale})`;
         btnReject.style.transform = `scale(${rejectScale})`;
 
-        // 第3次点击后，让“不要”按钮消失
         if (clickCount === maxClicks) {
           setTimeout(() => {
-            btnReject.style.opacity = '0'; // 透明过渡
+            btnReject.style.opacity = '0';
             setTimeout(() => {
-              btnReject.style.display = 'none'; // 彻底隐藏
-              // 最后让“可以”按钮稍微调整到合适大小并居中
+              btnReject.style.display = 'none';
               btnAccept.style.transform = 'scale(1.5)';
-            }, 300); // 等待透明过渡完成
-          }, 500); // 等待最后一次缩放动画完成
+            }, 300);
+          }, 500);
         }
       }
     });
 
-    // 点击“可以”的逻辑（保持不变，可自定义）
     btnAccept.addEventListener('click', () => {
-      alert('成功！我们的故事开始了~');
-      // 可选：点击后跳转页面（比如跳转到表白文案页面）
+      alert('圣诞奇迹发生了！我们的故事开始了~🎄');
       // window.location.href = "https://xxx.github.io/表白文案页面/";
     });
   </script>
