@@ -80,32 +80,11 @@
   <!-- 雪花 SVG -->
   <svg class="snow"></svg>
 
-  <h1>🎄 圣诞快乐！🎅</h1>
+
+  <h1>🎄 Merry Christmas! 🎄</h1>
+  <p style="font-size: 1.3rem; margin-bottom: 18px; color: #fffbe7; font-family: 'Segoe Script', 'Comic Sans MS', cursive; text-shadow: 1px 1px 6px #333;">愿你被温柔以待，心想事成，圣诞快乐！</p>
   <div class="tree-container">
-    <!-- 圣诞树 SVG -->
-    <svg width="180" height="220" viewBox="0 0 180 220">
-      <!-- 星星 -->
-      <polygon points="90,20 95,35 110,35 98,45 103,60 90,50 77,60 82,45 70,35 85,35" fill="#ffe066" stroke="#e1b12c" stroke-width="2"/>
-      <!-- 树层1 -->
-      <polygon points="90,60 140,110 40,110" fill="#2ecc40" stroke="#145a32" stroke-width="3"/>
-      <!-- 树层2 -->
-      <polygon points="90,90 130,150 50,150" fill="#27ae60" stroke="#145a32" stroke-width="3"/>
-      <!-- 树层3 -->
-      <polygon points="90,130 120,190 60,190" fill="#229954" stroke="#145a32" stroke-width="3"/>
-      <!-- 树干 -->
-      <rect x="80" y="190" width="20" height="25" rx="5" fill="#a0522d" stroke="#6e2c00" stroke-width="2"/>
-      <!-- 彩球 -->
-      <circle cx="110" cy="100" r="7" fill="#e74c3c" stroke="#fff" stroke-width="2"/>
-      <circle cx="70" cy="120" r="6" fill="#f9ca24" stroke="#fff" stroke-width="2"/>
-      <circle cx="120" cy="170" r="6" fill="#00bfff" stroke="#fff" stroke-width="2"/>
-      <circle cx="60" cy="170" r="5" fill="#ff6b6b" stroke="#fff" stroke-width="2"/>
-      <circle cx="90" cy="145" r="5" fill="#fffbe7" stroke="#fff" stroke-width="2"/>
-    </svg>
-  </div>
-  <p>圣诞夜，愿你成为我的女朋友吗？</p>
-  <div class="btn-group">
-    <button id="btnAccept" class="btn btn-accept">愿意！🎁</button>
-    <button id="btnReject" class="btn btn-reject">不要~⛄</button>
+    <canvas id="xmasTree" width="320" height="420" style="background:transparent; display:block;"></canvas>
   </div>
 
   <script>
@@ -124,36 +103,119 @@
     createSnow();
     setInterval(createSnow, 1200);
 
-    const btnAccept = document.getElementById('btnAccept');
-    const btnReject = document.getElementById('btnReject');
-    let clickCount = 0;
-    const maxClicks = 3;
+    // 圣诞树动画
+    function drawTree() {
+      const canvas = document.getElementById('xmasTree');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    btnReject.addEventListener('click', () => {
-      if (clickCount < maxClicks) {
-        clickCount++;
-        const acceptScale = 1.3 + (clickCount * 0.2);
-        const rejectScale = 0.8 - (clickCount * 0.1);
+      // 树干
+      ctx.save();
+      ctx.beginPath();
+      ctx.fillStyle = '#a0522d';
+      ctx.strokeStyle = '#6e2c00';
+      ctx.lineWidth = 4;
+      ctx.moveTo(140, 370);
+      ctx.lineTo(180, 370);
+      ctx.lineTo(180, 410);
+      ctx.lineTo(140, 410);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
 
-        btnAccept.style.transform = `scale(${acceptScale})`;
-        btnReject.style.transform = `scale(${rejectScale})`;
+      // 树层
+      const layers = [
+        { y: 340, w: 180, h: 60, color: '#229954' },
+        { y: 260, w: 220, h: 80, color: '#27ae60' },
+        { y: 170, w: 260, h: 100, color: '#2ecc40' }
+      ];
+      layers.forEach((layer, i) => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(160, layer.y);
+        ctx.lineTo(160 + layer.w / 2, layer.y + layer.h);
+        ctx.lineTo(160 - layer.w / 2, layer.y + layer.h);
+        ctx.closePath();
+        ctx.fillStyle = layer.color;
+        ctx.shadowColor = '#145a32';
+        ctx.shadowBlur = 18 - i * 4;
+        ctx.fill();
+        ctx.restore();
+      });
 
-        if (clickCount === maxClicks) {
-          setTimeout(() => {
-            btnReject.style.opacity = '0';
-            setTimeout(() => {
-              btnReject.style.display = 'none';
-              btnAccept.style.transform = 'scale(1.5)';
-            }, 300);
-          }, 500);
+      // 星星
+      function drawStar(cx, cy, spikes, outerR, innerR, color) {
+        let rot = Math.PI / 2 * 3;
+        let x = cx;
+        let y = cy;
+        let step = Math.PI / spikes;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - outerR);
+        for (let i = 0; i < spikes; i++) {
+          x = cx + Math.cos(rot) * outerR;
+          y = cy + Math.sin(rot) * outerR;
+          ctx.lineTo(x, y);
+          rot += step;
+          x = cx + Math.cos(rot) * innerR;
+          y = cy + Math.sin(rot) * innerR;
+          ctx.lineTo(x, y);
+          rot += step;
         }
+        ctx.lineTo(cx, cy - outerR);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.shadowColor = '#ffe066';
+        ctx.shadowBlur = 18;
+        ctx.fill();
+        ctx.restore();
       }
-    });
+      drawStar(160, 150, 5, 22, 10, '#ffe066');
 
-    btnAccept.addEventListener('click', () => {
-      alert('圣诞奇迹发生了！我们的故事开始了~🎄');
-      // window.location.href = "https://xxx.github.io/表白文案页面/";
-    });
+      // 彩球动画
+      const now = Date.now() / 600;
+      const balls = [
+        { x: 160, y: 200, r: 10, color: '#e74c3c' },
+        { x: 130, y: 250, r: 8, color: '#f9ca24' },
+        { x: 190, y: 250, r: 8, color: '#00bfff' },
+        { x: 110, y: 320, r: 7, color: '#ff6b6b' },
+        { x: 210, y: 320, r: 7, color: '#fffbe7' },
+        { x: 160, y: 300, r: 9, color: '#e67e22' }
+      ];
+      balls.forEach((b, i) => {
+        ctx.save();
+        ctx.beginPath();
+        let dy = Math.sin(now + i) * 6;
+        ctx.arc(b.x, b.y + dy, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.shadowColor = '#fff';
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // 灯串动画
+      for (let i = 0; i < 18; i++) {
+        let angle = Math.PI * (0.2 + 0.6 * (i / 18));
+        let x = 160 + Math.cos(angle) * (90 + 10 * Math.sin(now + i));
+        let y = 220 + Math.sin(angle) * (60 + 10 * Math.cos(now + i));
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = `hsl(${(now * 40 + i * 30) % 360},90%,70%)`;
+        ctx.shadowColor = '#fff';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    function animateTree() {
+      drawTree();
+      requestAnimationFrame(animateTree);
+    }
+    animateTree();
   </script>
 </body>
 </html>
