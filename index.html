@@ -256,24 +256,26 @@
         <div class="sub">愿你在新的一年里，心想事成，幸福常伴！</div>
     </div>
         <div class="christmas-main">
-            <div class="apple-svg-wrap">
-                <svg viewBox="0 0 200 220" width="200" height="220" class="apple-svg">
-                    <!-- 阴影 -->
-                    <ellipse cx="100" cy="210" rx="50" ry="10" fill="#000" opacity="0.12"/>
-                    <!-- 苹果主体 -->
-                    <path d="M100 60 C 60 60, 30 120, 60 170 Q 100 220, 140 170 C 170 120, 140 60, 100 60 Z" fill="#e53935" stroke="#a31515" stroke-width="3"/>
-                    <!-- 高光 -->
-                    <ellipse cx="80" cy="110" rx="18" ry="10" fill="#fff" opacity="0.18"/>
-                    <ellipse cx="120" cy="90" rx="10" ry="5" fill="#fff" opacity="0.13"/>
-                    <!-- 果蒂 -->
-                    <rect x="93" y="45" width="14" height="28" rx="7" fill="#795548" stroke="#5d4037" stroke-width="2" transform="rotate(-15 100 60)"/>
-                    <!-- 叶子 -->
-                    <ellipse cx="120" cy="50" rx="18" ry="8" fill="#43a047" stroke="#2e7d32" stroke-width="2" transform="rotate(-20 120 50)"/>
-                    <ellipse cx="120" cy="50" rx="8" ry="3" fill="#fff" opacity="0.18" transform="rotate(-20 120 50)"/>
-                    <!-- 叶脉 -->
-                    <path d="M120 50 Q 125 45, 130 50" stroke="#2e7d32" stroke-width="1" fill="none"/>
-                    <path d="M120 50 Q 115 55, 110 50" stroke="#2e7d32" stroke-width="1" fill="none"/>
-                </svg>
+            <div class="wish-box">
+                <div class="wish-text">
+                    <p>亲爱的朱青青：</p>
+                    <p>祝你圣诞快乐，愿你：</p>
+                    <ul>
+                        <li>每天都能开心大笑，烦恼都溜走</li>
+                        <li>遇见温柔的人和美好的事</li>
+                        <li>健康平安，心想事成</li>
+                        <li>勇敢追梦，永远被爱包围</li>
+                        <li>好运常伴，幸福常在</li>
+                        <li>新的一年，闪闪发光！</li>
+                    </ul>
+                </div>
+                <div class="fun-btns">
+                    <button class="fun-btn" onclick="showBless('收到一个大大的拥抱！')">点我领取拥抱 🤗</button>
+                    <button class="fun-btn" onclick="showBless('收到一颗幸运星，愿你好运连连！')">点我领取幸运星 ⭐</button>
+                    <button class="fun-btn" onclick="showBless('收到一杯热可可，温暖整个冬天！')">点我领取热可可 ☕</button>
+                    <button class="fun-btn" onclick="showBless('收到一只圣诞鹿，快乐奔向你！')">点我领取圣诞鹿 🦌</button>
+                    <button class="fun-btn" onclick="showBless('收到一份勇气，未来无所畏惧！')">点我领取勇气 💪</button>
+                </div>
             </div>
         </div>
     <div class="footer">Merry Christmas &copy; 2025 | 朱青青专属祝福</div>
@@ -286,22 +288,60 @@
         margin-bottom: 16px;
         flex-wrap: wrap;
       }
-            .apple-svg-wrap {
-                width: 220px;
-                max-width: 98vw;
+            .wish-box {
+                background: rgba(255,255,255,0.13);
+                border-radius: 20px;
+                box-shadow: 0 4px 24px 0 rgba(31,38,135,0.18);
+                padding: 28px 18px 18px 18px;
                 margin: 0 auto;
+                max-width: 400px;
+                width: 92vw;
                 display: flex;
-                justify-content: center;
+                flex-direction: column;
+                align-items: center;
             }
-            .apple-svg {
-                width: 100%;
-                height: auto;
-                display: block;
-                background: none;
+            .wish-text p {
+                margin: 0 0 8px 0;
+                font-size: 1.15rem;
+                color: #fff;
+                text-shadow: 0 0 8px #ffd700;
+            }
+            .wish-text ul {
+                margin: 0 0 10px 0;
+                padding-left: 1.2em;
+                color: #fffbe8;
+                font-size: 1.05rem;
+            }
+            .wish-text li {
+                margin-bottom: 4px;
+            }
+            .fun-btns {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+                margin-top: 10px;
+            }
+            .fun-btn {
+                background: linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%);
+                border: none;
+                border-radius: 18px;
+                padding: 8px 18px;
+                font-size: 1.05rem;
+                color: #a31515;
+                font-family: inherit;
+                cursor: pointer;
+                box-shadow: 0 2px 8px #ffd70044;
+                transition: transform 0.15s, box-shadow 0.15s;
+            }
+            .fun-btn:hover {
+                transform: scale(1.08) rotate(-2deg);
+                box-shadow: 0 4px 16px #ffd70088;
+                background: linear-gradient(90deg, #fcb69f 0%, #ffecd2 100%);
             }
             @media (max-width: 600px) {
-                .apple-svg-wrap { width: 98vw; }
-                .apple-svg { min-width: 0; }
+                .wish-box { padding: 12px 4vw 10px 4vw; max-width: 99vw; }
+                .fun-btn { font-size: 0.98rem; padding: 7px 10px; }
             }
     </style>
     <script>
@@ -331,10 +371,10 @@
             for (let i = 0; i < snowCount; i++) {
                 createSnowflake();
             }
-            // 平安果点击交互
-            document.querySelector('.apple-svg').addEventListener('click', function() {
-                alert('愿你平安喜乐，心想事成！');
-            });
+            // 趣味祝福按钮交互
+            window.showBless = function(msg) {
+                alert(msg);
+            }
         };
     </script>
 </body>
