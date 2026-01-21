@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>简单音乐播放器</title>
+	<link rel="stylesheet" href="styles.css">
+	<meta name="description" content="简单静态音乐播放器：播放/暂停/下一首">
+</head>
+<body>
+	<div class="simple-wrap">
+		<div class="simple-title">朱青青天天开心</div>
+		<img src="ppp.png" alt="仓鼠" class="simple-img" />
+		<div class="simple-card">
+			<div id="title" class="simple-song"></div>
+			<div class="progress-bar-wrap">
+				<div id="progressBar" class="progress-bar"><div id="progressInner" class="progress-inner"></div></div>
+				<div class="progress-time"><span id="currentTime">0:00</span> / <span id="duration">0:00</span></div>
+			</div>
+			<div class="simple-controls">
+				<button id="playPause" class="btn">播放</button>
+				<button id="next" class="btn">下一首</button>
+			</div>
+		</div>
+	</div>
+	<audio id="audio" preload="auto"></audio>
+	<script src="player.js"></script>
+</body>
+</html>

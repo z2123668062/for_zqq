@@ -1,0 +1,282 @@
+/* 简洁模式整体布局 */
+.simple-wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	min-height: 100vh;
+	padding-top: 48px;
+}
+.simple-title {
+	font-size: 2.2rem;
+	color: #1976d2;
+	font-weight: 900;
+	letter-spacing: 3px;
+	margin-bottom: 24px;
+	text-align: center;
+	text-shadow: 0 2px 12px rgba(30,136,229,0.13);
+	line-height: 1.2;
+}
+.simple-img {
+	width: 200px;
+	height: 200px;
+	object-fit: cover;
+	border-radius: 50%;
+	margin-bottom: 28px;
+	box-shadow: 0 4px 28px rgba(30,136,229,0.14);
+	background: #f3f3f3;
+	border: 5px solid #e3e9f2;
+}
+.simple-card {
+	background: #fff;
+	border-radius: 18px;
+	box-shadow: 0 6px 28px 0 rgba(31,38,135,0.12),0 2px 10px rgba(0,0,0,0.08);
+	padding: 28px 36px 26px 36px;
+	min-width: 320px;
+	max-width: 520px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.simple-song {
+	font-size: 1.18rem;
+	margin-bottom: 22px;
+	letter-spacing: 0.5px;
+	word-break: break-all;
+	color: #1976d2;
+	text-align: center;
+	font-weight: 600;
+}
+.simple-controls {
+	display: flex;
+	gap: 18px;
+	justify-content: center;
+}
+@media (max-width: 600px) {
+	.simple-title { font-size: 1.3rem; margin-bottom: 16px; }
+	.simple-img { width: 110px; height: 110px; margin-bottom: 18px; }
+	.simple-card { padding: 16px 6vw 12px 6vw; min-width: 0; }
+	.simple-song { font-size: 1rem; margin-bottom: 12px; }
+	.simple-controls { gap: 10px; }
+}
+/* 主体布局 */
+.main-wrap {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-start;
+	max-width: 700px;
+	margin: 0 auto;
+	width: 100vw;
+}
+.song-list-wrap {
+	min-width: 120px;
+	max-width: 180px;
+	margin-right: 18px;
+	padding-top: 10px;
+}
+.song-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.song-list li {
+	padding: 7px 10px;
+	margin-bottom: 6px;
+	border-radius: 6px;
+	background: #f3f6fa;
+	color: #1976d2;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: background 0.18s, color 0.18s;
+	user-select: none;
+}
+.song-list li.active, .song-list li:hover {
+	background: linear-gradient(90deg,#1e88e5 60%,#42a5f5 100%);
+	color: #fff;
+}
+@media (max-width: 700px) {
+	.main-wrap { flex-direction: column; align-items: stretch; }
+	.song-list-wrap { max-width: 100vw; min-width: 0; margin-right: 0; margin-bottom: 10px; }
+}
+.card-title{
+	/* 已废弃，保留兼容 */
+	display:none;
+}
+.page-top{
+	width:100vw;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	margin-top:0;
+	margin-bottom:0;
+	padding-top:10px;
+}
+.page-title{
+	font-size:2.2rem;
+	color:#1976d2;
+	font-weight:900;
+	letter-spacing:3px;
+	margin-bottom:8px;
+	text-align:center;
+	text-shadow:0 2px 12px rgba(30,136,229,0.13);
+	line-height:1.2;
+}
+.hamster-img{
+	width:150px;
+	height:150px;
+	object-fit:cover;
+	border-radius:50%;
+	margin-bottom:8px;
+	box-shadow:0 2px 16px rgba(30,136,229,0.13);
+	background:#f3f3f3;
+	border:4px solid #e3e9f2;
+}
+.card-title{
+	font-size:1.13rem;
+	color:#1976d2;
+	font-weight:600;
+	letter-spacing:2px;
+	margin-bottom:10px;
+	margin-top:2px;
+	text-align:center;
+	text-shadow:0 2px 8px rgba(30,136,229,0.10);
+}
+/* 简单样式 */
+
+html,body{
+	height:100%;margin:0;
+	font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Arial, Helvetica, sans-serif;
+	background: linear-gradient(135deg, #f8fafc 0%, #e3e9f2 100%);
+	color:#222;
+	min-height:100vh;
+}
+/* 播放器整体布局 */
+.player{
+	min-height:unset;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:flex-start;
+	background:transparent;
+	max-width:420px;
+	margin:0 auto;
+	padding:0 0 18px 0;
+}
+.card{
+	background:#fff;
+	border-radius:16px;
+	box-shadow:0 4px 18px 0 rgba(31,38,135,0.10),0 1.5px 6px rgba(0,0,0,0.06);
+	padding:12px 8px 10px 8px;
+	width:100%;
+	max-width:300px;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	transition:box-shadow 0.2s;
+	position:relative;
+	margin:0 auto;
+}
+.progress-bar-wrap{
+	width:100%;
+	max-width:360px;
+	margin:8px 0 6px 0;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+}
+.progress-bar{
+	width:100%;
+	height:7px;
+	background:#e3e9f2;
+	border-radius:5px;
+	overflow:hidden;
+	margin-bottom:2px;
+	cursor:pointer;
+	box-shadow:0 1px 4px rgba(30,136,229,0.06);
+}
+.progress-inner{
+	height:100%;
+	background:linear-gradient(90deg,#1e88e5 60%,#42a5f5 100%);
+	width:0%;
+	border-radius:5px;
+	transition:width 0.2s;
+}
+.progress-time{
+	font-size:0.92rem;
+	color:#888;
+	margin-bottom:2px;
+}
+.card:hover{
+	box-shadow:0 12px 48px 0 rgba(31,38,135,0.18),0 4px 16px rgba(0,0,0,0.10);
+}
+.hamster-img{
+	width:90px;
+	height:90px;
+	object-fit:cover;
+	border-radius:50%;
+	margin-bottom:18px;
+	box-shadow:0 2px 12px rgba(30,136,229,0.10);
+	background:#f3f3f3;
+	border:3px solid #e3e9f2;
+}
+.title{
+	font-size:1.08rem;
+	margin-bottom:10px;
+	letter-spacing:0.5px;
+	word-break:break-all;
+	background:rgba(30,136,229,0.07);
+	padding:7px 10px;
+	border-radius:7px;
+	box-shadow:0 2px 8px rgba(30,136,229,0.06);
+	min-width:80px;
+	text-align:center;
+	transition:opacity 0.35s,transform 0.35s;
+	opacity:1;
+	max-width:160px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+}
+.title.anim-out{
+	opacity:0;transform:translateY(20px) scale(0.98);
+}
+.title.anim-in{
+	opacity:1;transform:translateY(-10px) scale(1.03);
+}
+
+.controls{
+	display:flex;
+	gap:8px;
+	margin-top:6px;
+	width:100%;
+	justify-content:center;
+}
+.btn{
+	background:linear-gradient(90deg,#1e88e5 60%,#42a5f5 100%);
+	color:#fff;
+	border:0;
+	padding:8px 14px;
+	border-radius:7px;
+	cursor:pointer;
+	font-size:0.98rem;
+	box-shadow:0 2px 8px rgba(30,136,229,0.12);
+	transition:background 0.2s,transform 0.1s;
+	font-weight:500;
+}
+.btn:hover:not(:disabled){
+	background:linear-gradient(90deg,#1976d2 60%,#64b5f6 100%);
+	transform:translateY(-2px) scale(1.04);
+}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+@media (max-width: 600px) {
+	.player{max-width:100vw;padding:7vw 0 4vw 0;}
+	.card{padding:12px 2vw;max-width:98vw;}
+	.hamster-img{width:60px;height:60px;}
+	.page-title{font-size:1.08rem;}
+	.title{font-size:0.98rem;min-width:60px;max-width:90vw;}
+	.btn{padding:10px 8vw;}
+	.controls{gap:10px;}
+	.progress-bar-wrap{max-width:90vw;}
+}
