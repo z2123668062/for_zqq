@@ -1,29 +1,59 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>简单音乐播放器</title>
-	<link rel="stylesheet" href="styles.css">
-	<meta name="description" content="简单静态音乐播放器：播放/暂停/下一首">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>简单音乐播放器</title>
+<link rel="stylesheet" href="styles.css">
+<meta name="description" content="简单静态音乐播放器：播放/暂停/下一首">
 </head>
 <body>
-	<div class="simple-wrap">
-		<div class="simple-title">朱青青天天开心</div>
-		<img src="ppp.png" alt="仓鼠" class="simple-img" />
-		<div class="simple-card">
-			<div id="title" class="simple-song"></div>
-			<div class="progress-bar-wrap">
-				<div id="progressBar" class="progress-bar"><div id="progressInner" class="progress-inner"></div></div>
-				<div class="progress-time"><span id="currentTime">0:00</span> / <span id="duration">0:00</span></div>
-			</div>
-			<div class="simple-controls">
-				<button id="playPause" class="btn">播放</button>
-				<button id="next" class="btn">下一首</button>
-			</div>
-		</div>
-	</div>
-	<audio id="audio" preload="auto"></audio>
-	<script src="player.js"></script>
+<!-- 背景装饰 -->
+<div class="bg-decoration"></div>
+
+<div class="main-container">
+<!-- 左侧歌单区域 -->
+<div class="sidebar">
+<div class="sidebar-header">
+<h3>播放列表</h3>
+</div>
+<ul id="songList" class="song-list">
+<!-- 歌曲列表将由JS动态生成 -->
+<li class="empty-tip">正在加载歌单...</li>
+</ul>
+</div>
+
+<!-- 右侧播放器区域 -->
+<div class="content-area">
+<div class="player-card">
+<div class="card-header">
+<div class="page-title">朱青青天天开心</div>
+					<img src="ppp1.jpg" alt="仓鼠" class="cover-img" />
+<div class="song-info">
+<div id="title" class="song-title">等待播放...</div>
+</div>
+
+<div class="progress-container">
+<div id="progressBar" class="progress-bar">
+<div id="progressInner" class="progress-inner"></div>
+</div>
+<div class="time-info">
+<span id="currentTime">0:00</span>
+<span id="duration">0:00</span>
+</div>
+</div>
+
+<div class="controls">
+<button id="prev" class="btn btn-secondary">上一首</button>
+<button id="playPause" class="btn btn-primary">播放</button>
+<button id="next" class="btn btn-secondary">下一首</button>
+<button id="modeBtn" class="btn btn-secondary" title="切换模式">顺序</button>
+</div>
+</div>
+</div>
+</div>
+
+<audio id="audio" preload="auto"></audio>
+<script src="player.js"></script>
 </body>
 </html>
