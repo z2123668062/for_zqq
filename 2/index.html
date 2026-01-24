@@ -18,7 +18,10 @@
 <!-- 左侧歌单区域 -->
 <div class="sidebar">
 <div class="sidebar-header">
-<h3>播放列表</h3>
+<div class="tab-container">
+	<button id="tabMusic" class="tab-btn active">🎵 音乐</button>
+	<button id="tabStory" class="tab-btn">📖 故事</button>
+</div>
 </div>
 <ul id="songList" class="song-list">
 <!-- 歌曲列表将由JS动态生成 -->
@@ -50,6 +53,7 @@
 <button id="prev" class="btn btn-secondary">上一首</button>
 <button id="playPause" class="btn btn-primary">播放</button>
 <button id="next" class="btn btn-secondary">下一首</button>
+<button id="speedBtn" class="btn btn-secondary" title="倍速" style="display:none;">1.0x</button>
 <button id="modeBtn" class="btn btn-secondary" title="切换模式">顺序</button>
 </div>
 </div>
