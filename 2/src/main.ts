@@ -67,6 +67,28 @@ function boot(): void {
 
   let currentCategory: Category = 'music';
   let selectedSpeed = 1.0;
+  let lastUserActionAt = 0;
+
+  /** 用户连续操作（点击切歌）间隔不足 200ms 时忽略，防止 iOS 快速换源导致的卡顿 */
+  const tooSoon = (): boolean => {
+    const now = Date.now();
+    if (now - lastUserActionAt < 200) return true;
+    lastUserActionAt = now;
+    return false;
+  };
+
+  /**
+   * 隐藏预载器：提前把"下一首"缓存进浏览器，
+   * 切歌时无需现场下载，明显减少卡顿/等待。
+   * 故事文件很大（21MB+），只预载 metadata。
+   */
+  const preloader = new Audio();
+  const preloadNext = (src: string, heavy: boolean): void => {
+    if (!src || preloader.src === src) return;
+    preloader.preload = heavy ? 'auto' : 'metadata';
+    preloader.src = src;
+    preloader.load();
+  };
 
   const categoryConfig = (cat: Category) =>
     CATEGORIES.find((c) => c.key === cat) ?? CATEGORIES[0];
@@ -83,8 +105,12 @@ function boot(): void {
       return;
     }
 
+    // 轻微防抖：连点"下一首"不重复触发切歌（iOS 上快速换源会卡）
     audio.load(track.src);
     ui.setTitle(track.title);
+    // 预载下一首（故事分类只读 metadata，避免抢占流量）
+    const nextTrack = queue.playlist[queue.nextIndex(1)];
+    preloadNext(nextTrack?.src ?? '', cat.speedEnabled);
     // 倍速只在故事分类生效，音乐恒为 1.0（与旧版一致）
     audio.setRate(cat.speedEnabled ? selectedSpeed : 1.0);
     ui.updateSpeed(selectedSpeed, cat.speedEnabled);
@@ -113,20 +139,26 @@ function boot(): void {
   const playlists: Record<Category, Track[]> = { music: [], story: [] };
 
   /* ---- 界面回调接线 ---- */
-  ui.onToggle = () => audio.toggle();
+  ui.onToggle = () => {
+    if (tooSoon()) return;
+    audio.toggle();
+  };
   ui.onPrev = async () => {
-    if (queue.length === 0) return;
+    if (queue.length === 0 || tooSoon()) return;
     queue.setIndex(queue.nextIndex(-1));
     await updateSourceAndTitle();
     await audio.play();
   };
   ui.onNext = async () => {
-    if (queue.length === 0) return;
+    if (queue.length === 0 || tooSoon()) return;
     queue.setIndex(queue.nextIndex(1));
     await updateSourceAndTitle();
     await audio.play();
   };
-  ui.onPlayIndex = (index) => void playIndex(index);
+  ui.onPlayIndex = (index) => {
+    if (tooSoon()) return;
+    void playIndex(index); // 点击当前歌曲 = 从头重播（与旧版一致）
+  };
   ui.onSeekRatio = (ratio) => audio.seekRatio(ratio);
   ui.onModeCycle = () => {
     const currentIdx = PLAY_MODES.findIndex((m) => m.key === queue.playMode);

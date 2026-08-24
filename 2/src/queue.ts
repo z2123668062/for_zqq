@@ -14,6 +14,11 @@ export class PlaybackQueue {
     return this.tracks[this.index];
   }
 
+  /** 只读歌单（供预加载下一首等使用） */
+  get playlist(): readonly Track[] {
+    return this.tracks;
+  }
+
   get currentIndex(): number {
     return this.index;
   }

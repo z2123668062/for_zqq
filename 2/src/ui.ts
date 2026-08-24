@@ -368,6 +368,8 @@ export class PlayerUI {
       img.decoding = 'async';
       img.width = 156;
       img.height = 150;
+      // 加载完成后停掉骨架屏微光动画（省电 + 减少播放时的合成器开销）
+      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
 
       const caption = document.createElement('figcaption');
       caption.textContent = PHOTO_CAPTIONS[basename(src)] ?? DEFAULT_CAPTION;
