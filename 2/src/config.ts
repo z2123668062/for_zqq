@@ -47,21 +47,19 @@ export const PHOTOS: readonly string[] = [
 export const CAROUSEL_INTERVAL_MS = 6000;
 
 /**
- * 拍立得的手写配文（按文件名匹配，没配的用默认文案）。
- * 想写点甜言蜜语就改这里 ♡
+ * 拍立得默认配文。
+ * ✍️ 实际配文在 public/photos/captions.json（「青听管理台」可直接修改），
+ * 这里的默认值只在 JSON 缺失或未配置该照片时兜底。
  */
-export const PHOTO_CAPTIONS: Record<string, string> = {
-  合照: '奶茶店猫耳那天 ♡',
-  微信图片_20260824122659_2531_1: '脸被橙子茶抢走了',
-  Q版朱青青: '朱青青 · 王羊羊 ♡',
-  王羊羊唱歌: 'KTV 深情献唱',
-  微信图片_20260824122700_2532_1: '饿到想变成小狗',
-  Q版王羊羊: '王羊羊 · 朱青青 ♡',
-  我的照片1: '唱到忘我',
-};
-
-/** 拍立得默认配文 */
 export const DEFAULT_CAPTION = '某个可爱的瞬间 ♡';
+
+/** 站点文案默认值（实际文案在 public/site.json，管理台可改） */
+export const SITE_DEFAULTS = {
+  title: '青听',
+  mark: '· 相册电台',
+  sub: '朱青青 ♡ 王羊羊 的稀罕小本子',
+  date: '二〇二六 · 冬 ♡',
+} as const;
 
 /** 主题色兜底（照片颜色提取失败时使用） */
 export const DEFAULT_THEME: readonly [string, string] = ['#e5666d', '#7ea8df'];

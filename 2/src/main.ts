@@ -9,7 +9,7 @@
  *      PlayerUI(界面渲染) ←———— main.ts(编排)
  */
 import './styles.css';
-import { CATEGORIES, PHOTOS, PLAY_MODES, SPEED_STEPS } from './config';
+import { CATEGORIES, PHOTOS, PLAY_MODES, SITE_DEFAULTS, SPEED_STEPS } from './config';
 import { PlaybackQueue } from './queue';
 import { AudioPlayer } from './player';
 import { PlayerUI } from './ui';
@@ -17,16 +17,26 @@ import { basename, clearProgress, fileExists, readProgress, tryJson, writeProgre
 import type { Category, Track } from './types';
 
 /* ------------------------------------------------------------------
- * 照片墙加载：优先 photos/list.json（方便随时加照片），
- * 文件缺失时回落代码里的 PHOTOS 配置
+ * 照片墙加载：list.json（可以随时加照片）+ captions.json（配文，管理台可改）
  * ------------------------------------------------------------------ */
-async function loadPhotos(): Promise<string[]> {
+async function loadPhotos(): Promise<{ photos: string[]; captions: Record<string, string> }> {
   const json = await tryJson<unknown>('photos/list.json');
+  const photos: string[] = [];
   if (Array.isArray(json) && json.length > 0) {
     const names = json.filter((item): item is string => typeof item === 'string');
-    if (names.length > 0) return names.map((n) => `photos/${n}`);
+    if (names.length > 0) photos.push(...names.map((n) => `photos/${n}`));
   }
-  return [...PHOTOS];
+  if (photos.length === 0) photos.push(...PHOTOS);
+  const captions = (await tryJson<Record<string, string>>('photos/captions.json')) ?? {};
+  return { photos, captions };
+}
+
+/* ------------------------------------------------------------------
+ * 站点文案加载：public/site.json（管理台可改），缺失时用代码兜底
+ * ------------------------------------------------------------------ */
+async function loadSite(): Promise<{ title: string; mark: string; sub: string; date: string }> {
+  const s = await tryJson<Partial<{ title: string; mark: string; sub: string; date: string }>>('site.json');
+  return { ...SITE_DEFAULTS, ...(s ?? {}) };
 }
 
 /* ------------------------------------------------------------------
@@ -278,8 +288,12 @@ function boot(): void {
       playlists.music = musicList;
       playlists.story = storyList;
 
-      // 启动照片轮播（与歌曲解耦）
-      ui.setPhotos(await loadPhotos());
+      // 启动照片轮播（与歌曲解耦，配文来自 captions.json）
+      const { photos, captions } = await loadPhotos();
+      ui.setPhotos(photos, captions);
+
+      // 应用站点文案（刊头标题/副题/日期）
+      ui.applySite(await loadSite());
 
       if (musicList.length === 0 && storyList.length === 0) {
         ui.setTitle('未找到音乐或故事');

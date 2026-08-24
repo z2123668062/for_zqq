@@ -12,3 +12,6 @@ Thumbs.db
 shots/
 .edge-tmp*/
 .preview-tools/
+
+# 本地管理台（不上 GitHub）
+admin/

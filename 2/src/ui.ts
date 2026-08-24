@@ -7,7 +7,6 @@ import {
   DEFAULT_CAPTION,
   DEFAULT_THEME,
   MEDIA_SESSION,
-  PHOTO_CAPTIONS,
 } from './config';
 import { basename, formatTime } from './utils';
 import type { Category, PlayMode, Track } from './types';
@@ -78,6 +77,7 @@ export class PlayerUI {
 
   /* 照片墙状态 */
   private photos: string[] = [];
+  private captions: Record<string, string> = {};
   private photoIndex = 0;
   private timer = 0;
   private scrollTimer = 0;
@@ -287,6 +287,19 @@ export class PlayerUI {
     document.title = title ? `${title} · 青听` : '青听 · 相册电台';
   }
 
+  /** 应用站点文案（刊头标题/副题/日期），来自 public/site.json（管理台可改） */
+  applySite(site: { title: string; mark: string; sub: string; date: string }): void {
+    const t = must<HTMLElement>('#journalTitle');
+    const m = must<HTMLElement>('#journalMark');
+    const s = must<HTMLElement>('#journalSub');
+    const d = must<HTMLElement>('#journalDate');
+    t.textContent = site.title;
+    m.textContent = site.mark;
+    s.textContent = site.sub;
+    d.textContent = site.date;
+    if (site.title || site.mark) document.title = `${site.title}${site.mark}`;
+  }
+
   /** 播放/暂停状态：按钮图标、虚线圈、卡带转轮联动 */
   updatePlayState(playing: boolean): void {
     this.iconPlay.style.display = playing ? 'none' : '';
@@ -339,11 +352,12 @@ export class PlayerUI {
   /**
    * 设置照片列表并启动轮播。
    * 点卡片聚焦、点空白翻页、拖动松手归位；
-   * 每张照片的配文来自 PHOTO_CAPTIONS（手账手写风）。
+   * 每张照片的配文来自 captions（手账手写风，管理台可改）。
    */
-  setPhotos(photos: readonly string[]): void {
+  setPhotos(photos: readonly string[], captions: Record<string, string> = {}): void {
     if (photos.length === 0) return;
     this.photos = [...photos];
+    this.captions = captions;
     this.photoIndex = 0;
     this.buildCards();
     this.buildDots();
@@ -392,7 +406,7 @@ export class PlayerUI {
       img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
 
       const caption = document.createElement('figcaption');
-      caption.textContent = PHOTO_CAPTIONS[basename(src)] ?? DEFAULT_CAPTION;
+      caption.textContent = this.captions[basename(src)] ?? DEFAULT_CAPTION;
 
       const tape = document.createElement('i');
       tape.className = 'polaroid-tape';
