@@ -830,8 +830,14 @@ button:focus-visible {
   }
 
   .journal-body {
-    grid-template-columns: 1fr;
+    /* minmax(0,1fr)：关键修复——防止 iOS 用横向内容(拍立得条)撑大网格列 */
+    grid-template-columns: minmax(0, 1fr);
     gap: 26px;
+  }
+
+  .page-list,
+  .page-main {
+    min-width: 0;
   }
 
   /* 手机：先看照片，歌单放在下面 */
@@ -879,6 +885,9 @@ button:focus-visible {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     padding: 18px 26px 8px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     height: auto;
     margin: 0;
     -webkit-overflow-scrolling: touch;

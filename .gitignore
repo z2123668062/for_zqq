@@ -11,3 +11,4 @@ Thumbs.db
 # 本地预览截图与临时文件
 shots/
 .edge-tmp*/
+.preview-tools/
