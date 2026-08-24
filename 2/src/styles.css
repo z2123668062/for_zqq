@@ -1,0 +1,996 @@
+/* =========================================================
+   青听 · 相册电台  v3 —— 「少女手账」美学
+   设计语言：米色纸张 + 点阵纸格 + 手写字体 + 彩色胶带
+   质感元素：拍立得照片、卡式磁带、贴纸宠物、马克笔划线
+   ========================================================= */
+
+:root {
+  --paper: #f7efdd;
+  --paper-card: #fffdf4;
+  --paper-edge: #eadfc6;
+  --ink: #4a3d2d;
+  --ink-2: rgba(90, 74, 52, 0.7);
+  --ink-3: rgba(100, 78, 52, 0.5);
+  /* 主题色由 JS 从照片提取后动态写入（马克笔的颜色跟着照片变） */
+  --accent-1: #e5666d;
+  --accent-2: #7ea8df;
+  --accent-grad: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  --font-hand: "Kaiti SC", "STKaiti", "KaiTi", "FZKai-Z03S", "PingFang SC",
+    "Microsoft YaHei", serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-hand);
+  color: var(--ink);
+  background: var(--paper);
+  /* 点阵纸格 */
+  background-image: radial-gradient(circle, rgba(140, 115, 78, 0.16) 1px, transparent 1.6px);
+  background-size: 24px 24px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  /* 给底部迷你卡带留位置 + iPhone 灵动岛/Home 条安全区 */
+  padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 2px dashed rgba(229, 102, 109, 0.7);
+  outline-offset: 3px;
+}
+
+/* 桌面暖光 */
+.desk-light {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(58% 48% at 16% 10%, rgba(255, 214, 190, 0.55), transparent 70%),
+    radial-gradient(46% 42% at 86% 88%, rgba(184, 210, 255, 0.38), transparent 70%),
+    radial-gradient(40% 40% at 70% 8%, rgba(255, 235, 190, 0.35), transparent 70%);
+}
+
+/* =========================================================
+   手账刊头
+   ========================================================= */
+.journal {
+  width: min(1080px, calc(100% - 36px));
+  margin: 24px auto 64px;
+}
+
+.masthead {
+  position: relative;
+  text-align: center;
+  padding: 10px 0 26px;
+}
+
+.journal-title {
+  font-size: clamp(30px, 5vw, 42px);
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #3e3328;
+}
+
+/* 马克笔高亮 */
+.marker {
+  background: linear-gradient(
+    104deg,
+    transparent 2%,
+    color-mix(in srgb, var(--accent-2) 32%, #ffe9d2) 10%,
+    color-mix(in srgb, var(--accent-2) 32%, #ffe9d2) 90%,
+    transparent 98%
+  );
+  padding: 2px 12px;
+  border-radius: 6px;
+  margin-left: 6px;
+}
+
+.journal-sub {
+  margin-top: 9px;
+  font-size: 15px;
+  color: var(--ink-2);
+  letter-spacing: 1px;
+}
+
+.journal-date {
+  position: absolute;
+  right: 2px;
+  top: 12px;
+  font-size: 12px;
+  color: var(--ink-3);
+  transform: rotate(-2deg);
+  letter-spacing: 2px;
+}
+
+/* 彩色胶带（贴在刊头上） */
+.tape {
+  position: absolute;
+  top: -10px;
+  width: 92px;
+  height: 26px;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(120, 90, 60, 0.18);
+  opacity: 0.9;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.28) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.tape-pink {
+  left: calc(50% - 82px);
+  transform: rotate(-7deg);
+  background-color: rgba(238, 163, 178, 0.85);
+}
+
+.tape-blue {
+  left: calc(50% + 6px);
+  transform: rotate(6deg);
+  background-color: rgba(148, 183, 227, 0.8);
+}
+
+/* =========================================================
+   手账主体：左页歌单 + 右页拍立得/卡带
+   ========================================================= */
+.journal-body {
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: 34px;
+  align-items: start;
+}
+
+/* ---------- 左页：点阵纸歌单 ---------- */
+.page-list {
+  background: var(--paper-card);
+  border: 1px solid var(--paper-edge);
+  border-radius: 10px;
+  padding: 18px 16px 12px;
+  box-shadow:
+    7px 9px 0 rgba(190, 165, 120, 0.16),
+    0 16px 32px rgba(120, 95, 60, 0.12);
+  transform: rotate(-0.5deg);
+  display: flex;
+  flex-direction: column;
+  min-height: 480px;
+}
+
+/* 胶带式 tab */
+.tabs {
+  display: inline-flex;
+  gap: 10px;
+  padding: 2px 2px 12px;
+}
+
+.tab {
+  padding: 8px 20px;
+  border-radius: 4px 10px 10px 10px;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #8a4a52;
+  background: rgba(238, 177, 185, 0.75);
+  border: 1px dashed rgba(255, 255, 255, 0.65);
+  transform: rotate(-1.4deg);
+  transition: all 0.2s ease;
+}
+
+.tab:nth-child(2) {
+  color: #3f5f7c;
+  background: rgba(156, 190, 224, 0.72);
+  transform: rotate(1.4deg);
+}
+
+.tab:hover {
+  filter: saturate(1.2) brightness(1.03);
+}
+
+.tab.active {
+  transform: rotate(-1.4deg) scale(1.06);
+  box-shadow: 0 5px 12px rgba(160, 110, 90, 0.25);
+  border-style: solid;
+  filter: saturate(1.25);
+}
+
+.tab:nth-child(2).active {
+  transform: rotate(1.4deg) scale(1.06);
+}
+
+/* 手写歌单 */
+.song-list {
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 470px;
+  padding: 2px 4px 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 125, 85, 0.35) transparent;
+}
+
+.song-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.song-list::-webkit-scrollbar-thumb {
+  background: rgba(150, 125, 85, 0.3);
+  border-radius: 3px;
+}
+
+.song-list li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 10px;
+  font-size: 16px;
+  color: #5c4c35;
+  border-bottom: 1px dashed rgba(150, 125, 85, 0.32);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+  user-select: none;
+}
+
+.song-list li::before {
+  content: "♪";
+  font-size: 12px;
+  color: rgba(120, 95, 60, 0.55);
+  flex: none;
+}
+
+.song-list li:hover {
+  background: rgba(255, 255, 255, 0.55);
+  transform: rotate(0.25deg);
+}
+
+/* 当前播放：马克笔划线 */
+.song-list li.active {
+  background: linear-gradient(
+    95deg,
+    transparent 3%,
+    color-mix(in srgb, var(--accent-1) 18%, transparent) 10%,
+    color-mix(in srgb, var(--accent-1) 30%, transparent) 88%,
+    transparent 97%
+  );
+  color: #b94453;
+  transform: rotate(-0.35deg);
+}
+
+.song-list li .song-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-list li.empty-tip {
+  justify-content: center;
+  color: var(--ink-3);
+  cursor: default;
+  font-size: 14px;
+  padding: 34px 0;
+  border-bottom: none;
+}
+
+.song-list li.empty-tip:hover {
+  background: none;
+  transform: none;
+}
+
+.song-list li.empty-tip::before {
+  content: "";
+}
+
+/* 正在播放的小均衡器 */
+.eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 15px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.song-list li.active .eq {
+  opacity: 1;
+}
+
+.eq i {
+  width: 3px;
+  border-radius: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent-1), var(--accent-2));
+  animation: eq-bounce 1s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.eq i:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.eq i:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+@keyframes eq-bounce {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+.page-list-foot {
+  margin-top: 10px;
+  text-align: right;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  letter-spacing: 1px;
+  transform: rotate(-1deg);
+}
+
+/* =========================================================
+   右页：拍立得相册
+   ========================================================= */
+.photo-deck {
+  position: relative;
+  width: min(470px, 100%);
+  height: 400px;
+  margin: 0 auto;
+}
+
+.deck-hint {
+  position: absolute;
+  top: -14px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-3);
+  letter-spacing: 3px;
+}
+
+/* 拍立得卡片：JS 计算扇形位置 */
+.polaroid {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 188px;
+  background: #fff;
+  padding: 9px 9px 40px;
+  border-radius: 4px;
+  box-shadow:
+    0 10px 22px rgba(90, 70, 40, 0.24),
+    0 2px 0 rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  will-change: transform;
+  transition: transform 0.55s cubic-bezier(0.22, 0.8, 0.34, 1), opacity 0.5s ease,
+    box-shadow 0.3s ease;
+}
+
+.polaroid.dragging {
+  transition: none;
+  cursor: grabbing;
+  box-shadow:
+    0 18px 34px rgba(90, 70, 40, 0.32),
+    0 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.polaroid img {
+  display: block;
+  width: 100%;
+  height: 198px;
+  object-fit: cover;
+  border-radius: 3px;
+  background: #eee;
+}
+
+.polaroid figcaption {
+  padding-top: 9px;
+  text-align: center;
+  font-size: 13.5px;
+  letter-spacing: 0.5px;
+  color: #55452f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 卡片上的小胶带（颜色轮换） */
+.polaroid-tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 64px;
+  height: 19px;
+  transform: translateX(-50%) rotate(-3deg);
+  border-radius: 2px;
+  background: rgba(244, 143, 177, 0.85);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.polaroid:nth-child(3n) .polaroid-tape {
+  background: rgba(126, 168, 223, 0.8);
+  transform: translateX(-50%) rotate(2.5deg);
+}
+
+.polaroid:nth-child(3n + 1) .polaroid-tape {
+  background: rgba(255, 209, 102, 0.8);
+  transform: translateX(-50%) rotate(-1deg);
+}
+
+/* 翻页圆点 */
+.deck-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  min-height: 9px;
+}
+
+.deck-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(120, 95, 60, 0.32);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.deck-dots .dot:hover {
+  background: rgba(120, 95, 60, 0.55);
+}
+
+.deck-dots .dot.active {
+  width: 20px;
+  border-radius: 999px;
+  background: var(--accent-grad);
+}
+
+/* =========================================================
+   圆纸片控制键（基础组件，迷你卡带复用）
+   ========================================================= */
+.paper-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 47px;
+  height: 47px;
+  border-radius: 50%;
+  background: #fffdf6;
+  border: 1px solid #d9cbaa;
+  color: #6b5b42;
+  box-shadow:
+    0 3px 0 #d9cbaa,
+    0 9px 17px rgba(120, 95, 60, 0.16);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.paper-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 5px 0 #d9cbaa,
+    0 12px 20px rgba(120, 95, 60, 0.2);
+}
+
+.paper-btn:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 #d9cbaa,
+    0 4px 8px rgba(120, 95, 60, 0.16);
+}
+
+.paper-btn.pill {
+  width: auto;
+  padding: 0 16px;
+  border-radius: 999px;
+}
+
+.paper-label {
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.paper-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.paper-icon svg {
+  display: block;
+}
+
+/* 播放键：珊瑚红大圆键 */
+.play-btn {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 30% 25%, #f28d92, var(--accent-1) 72%);
+  color: #fff;
+  box-shadow:
+    0 5px 0 color-mix(in srgb, var(--accent-1) 55%, #7c3a2a),
+    0 13px 26px color-mix(in srgb, var(--accent-1) 45%, transparent);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.play-btn:hover {
+  transform: scale(1.06);
+}
+
+.play-btn:active {
+  transform: scale(0.96);
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--accent-1) 55%, #7c3a2a),
+    0 7px 14px color-mix(in srgb, var(--accent-1) 40%, transparent);
+}
+
+.play-btn.playing::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 2px dashed color-mix(in srgb, var(--accent-1) 70%, transparent);
+  animation: pulse-ring 3s linear infinite;
+}
+
+@keyframes pulse-ring {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 禁用态 */
+.play-btn:disabled,
+.paper-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 卡带转轮（迷你卡带与全尺寸通用） */
+.reel {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  flex: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 32%, #fff 0 26%, #efe6d2 58%, #dccfaf 100%);
+  border: 2px solid #cdbfa0;
+  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.04);
+}
+
+.reel::before {
+  /* 辐条（细辐条更像真卡带转轮） */
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(#c8b890 0 6deg, transparent 6deg 45deg);
+  animation: reel-spin 2.2s linear infinite;
+  animation-play-state: paused;
+}
+
+.reel::after {
+  /* 轴心 */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #b8a67f;
+}
+
+.dock.playing .reel::before {
+  animation-play-state: running;
+}
+
+.dock.playing .reel-right::before {
+  animation-direction: reverse;
+}
+
+@keyframes reel-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   迷你卡带 —— 贴在屏幕下沿的悬浮条
+   ========================================================= */
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  /* 底部避开 iPhone Home 指示条 */
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  width: min(560px, calc(100% - 16px));
+  margin: 0 auto;
+  border-radius: 16px;
+  background: rgba(246, 238, 219, 0.95);
+  border: 1px solid #dbcdaa;
+  box-shadow:
+    0 14px 30px rgba(120, 95, 60, 0.28),
+    inset 0 1px 0 #fff;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+/* 顶部 2px 磁带进度线（整条横贯） */
+.dock-progress {
+  height: 3px;
+  background: rgba(76, 66, 52, 0.28);
+  cursor: pointer;
+}
+
+.dock-progress-inner {
+  height: 100%;
+  width: 0;
+  background: var(--accent-grad);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-1) 70%, transparent);
+}
+
+.dock-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 14px 9px;
+}
+
+/* 迷你转轮 */
+.dock .reel {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: 1.5px solid #cdbfa0;
+}
+
+.dock .reel::before {
+  inset: 5px;
+}
+
+.dock .reel::after {
+  width: 7px;
+  height: 7px;
+  border-width: 1px;
+}
+
+/* 歌名 + 时间 */
+.dock-label {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.dock-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #3e3328;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dock-time {
+  display: flex;
+  justify-content: space-between;
+  padding: 1px 6px 0;
+  font-size: 10px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+
+/* 迷你按钮 */
+.dock .paper-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  box-shadow:
+    0 2px 0 #d9cbaa,
+    0 6px 12px rgba(120, 95, 60, 0.16);
+}
+
+.dock .paper-btn:hover {
+  box-shadow:
+    0 4px 0 #d9cbaa,
+    0 8px 14px rgba(120, 95, 60, 0.2);
+}
+
+.dock .pill {
+  width: auto;
+  height: 34px;
+  padding: 0 11px;
+  border-radius: 999px;
+  gap: 5px;
+}
+
+.dock .paper-label {
+  font-size: 11px;
+}
+
+.dock .play-btn {
+  width: 46px;
+  height: 46px;
+}
+
+.dock .play-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.dock .play-btn.playing::after {
+  inset: -5px;
+}
+
+/* =========================================================
+   贴纸宠物
+   ========================================================= */
+.pet {
+  position: fixed;
+  bottom: 88px;
+  z-index: 60;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  filter: drop-shadow(0 8px 14px rgba(90, 70, 40, 0.28));
+}
+
+.pet-left {
+  left: 20px;
+  transform: rotate(-8deg);
+}
+
+.pet-right {
+  right: 20px;
+  transform: rotate(7deg);
+}
+
+.pet img {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  background: #fff;
+  animation: pet-bob 4.2s ease-in-out infinite alternate;
+  transition: transform 0.2s ease;
+}
+
+.pet-left img {
+  animation-delay: -2.1s;
+}
+
+.pet:hover img {
+  transform: scale(1.1);
+}
+
+@keyframes pet-bob {
+  from { transform: translateY(0) rotate(-3deg); }
+  to { transform: translateY(-9px) rotate(3deg); }
+}
+
+.pet-heart {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--accent-1);
+  font-size: 21px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pet.pop .pet-heart {
+  animation: heart-pop 0.9s ease forwards;
+}
+
+@keyframes heart-pop {
+  0% { transform: translateX(-50%) scale(0) rotate(-20deg); opacity: 0; }
+  30% { transform: translateX(-50%) scale(1.4) rotate(8deg); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-30px) scale(0.6) opacity(0); }
+}
+
+/* =========================================================
+   移动端：拍立得横滑胶片条 + 紧凑刊头
+   ========================================================= */
+@media (max-width: 900px) {
+  .journal {
+    width: min(520px, calc(100% - 24px));
+    margin: 18px auto 48px;
+  }
+
+  .journal-body {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  /* 手机：先看照片，歌单放在下面 */
+  .page-list {
+    order: 2;
+    min-height: 0;
+  }
+
+  .page-main {
+    order: 1;
+  }
+
+  /* 紧凑刊头 */
+  .masthead {
+    padding: 6px 0 14px;
+  }
+
+  .journal-title {
+    font-size: 26px;
+    letter-spacing: 2px;
+  }
+
+  .journal-sub {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+
+  .journal-date {
+    position: static;
+    display: block;
+    margin-top: 8px;
+    font-size: 11px;
+  }
+
+  .tape {
+    width: 64px;
+    height: 20px;
+    top: -6px;
+  }
+
+  /* 拍立得：横向可滑动胶片条（吸边 + 露边） */
+  .photo-deck {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 18px 26px 8px;
+    height: auto;
+    margin: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .photo-deck::-webkit-scrollbar {
+    display: none;
+  }
+
+  .deck-hint {
+    position: static;
+    width: 100%;
+    flex: 0 0 100%;
+    text-align: center;
+    padding-bottom: 4px;
+  }
+
+  .polaroid {
+    position: static;
+    left: auto;
+    top: auto;
+    flex: 0 0 156px;
+    width: 156px;
+    scroll-snap-align: center;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .polaroid img {
+    height: 150px;
+  }
+
+  .polaroid figcaption {
+    font-size: 12.5px;
+  }
+
+  .deck-dots {
+    margin-top: 10px;
+  }
+
+  /* 迷你卡带占满宽度 */
+  .dock {
+    width: calc(100% - 12px);
+    bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dock .reel {
+    width: 26px;
+    height: 26px;
+  }
+
+  .dock .reel::before {
+    inset: 4px;
+  }
+
+  /* 小屏再收一轮按钮：时间行让位（进度线足以看进度） */
+  .dock-body {
+    gap: 5px;
+    padding: 7px 10px 8px;
+  }
+
+  .dock .paper-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .dock .play-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .dock-time {
+    display: none;
+  }
+
+  .dock .pill {
+    width: auto;
+    flex: none;
+    height: 32px;
+    padding: 0 8px;
+  }
+
+  .dock .dock-btn,
+  .dock .play-btn {
+    flex: none;
+  }
+
+  .dock-label {
+    min-width: 40px;
+  }
+
+  .pet {
+    bottom: 76px;
+  }
+
+  .pet-left {
+    left: 10px;
+  }
+
+  .pet-right {
+    right: 10px;
+  }
+
+  .pet img {
+    width: 46px;
+    height: 46px;
+    border-width: 3px;
+  }
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .reel::before,
+  .play-btn.playing::after,
+  .eq i,
+  .pet img,
+  .pet.pop .pet-heart {
+    animation: none;
+  }
+}

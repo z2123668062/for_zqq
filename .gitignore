@@ -1,0 +1,13 @@
+# 依赖与构建产物（由 GitHub Actions 云端生成，不入库）
+node_modules/
+2/dist/
+.npm-cache/
+
+# 编辑器/系统杂项
+.DS_Store
+Thumbs.db
+*.local
+
+# ����Ԥ����ͼ����ʱ�ļ�
+shots/
+.edge-tmp/

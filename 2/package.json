@@ -1,0 +1,16 @@
+{
+  "name": "zqq-music-player",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "朱青青的音乐播放器 - TypeScript + Vite",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0"
+  }
+}

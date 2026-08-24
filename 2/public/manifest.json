@@ -1,0 +1,23 @@
+{
+  "name": "青听 · 相册电台",
+  "short_name": "青听",
+  "description": "朱青青 ♡ 王羊羊 的稀罕小本子：音乐、故事和一整本照片",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7efdd",
+  "theme_color": "#f7efdd",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "photos/Q版朱青青.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "photos/Q版朱青青.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
