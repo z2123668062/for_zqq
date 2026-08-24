@@ -356,13 +356,18 @@ export class PlayerUI {
   /** 生成拍立得卡片 */
   private buildCards(): void {
     this.photoDeck.querySelectorAll('.polaroid').forEach((el) => el.remove());
-    this.cards = this.photos.map((src) => {
+    this.cards = this.photos.map((src, i) => {
       const card = document.createElement('figure');
       card.className = 'polaroid';
 
       const img = document.createElement('img');
       img.src = src;
       img.alt = '';
+      // 懒加载：前 2 张优先，其余滑到时再下（手机上首屏更快）
+      img.loading = i < 2 ? 'eager' : 'lazy';
+      img.decoding = 'async';
+      img.width = 156;
+      img.height = 150;
 
       const caption = document.createElement('figcaption');
       caption.textContent = PHOTO_CAPTIONS[basename(src)] ?? DEFAULT_CAPTION;

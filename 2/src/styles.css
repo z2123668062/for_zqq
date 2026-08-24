@@ -394,7 +394,13 @@ button:focus-visible {
   height: 198px;
   object-fit: cover;
   border-radius: 3px;
-  background: #eee;
+  /* 加载中：纸张微光骨架屏，替换冷灰 */
+  background: linear-gradient(100deg, #f1e7d2 30%, #fbf5e6 45%, #f1e7d2 60%) 0 0 / 200% 100%;
+  animation: img-shimmer 1.4s linear infinite;
+}
+
+@keyframes img-shimmer {
+  to { background-position: -200% 0; }
 }
 
 .polaroid figcaption {
@@ -990,7 +996,8 @@ button:focus-visible {
   .play-btn.playing::after,
   .eq i,
   .pet img,
-  .pet.pop .pet-heart {
+  .pet.pop .pet-heart,
+  .polaroid img {
     animation: none;
   }
 }
