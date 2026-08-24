@@ -48,6 +48,8 @@ export class PlayerUI {
   onModeCycle: () => void = () => {};
   onSpeedCycle: () => void = () => {};
   onCategory: (category: Category) => void = () => {};
+  /** 点击"继续播放"小纸片 */
+  onResume: () => void = () => {};
 
   /* 手账元素 */
   private readonly songListEl: HTMLUListElement;
@@ -66,6 +68,8 @@ export class PlayerUI {
   private readonly modeLabel: HTMLElement;
   private readonly speedBtn: HTMLButtonElement;
   private readonly speedLabel: HTMLElement;
+  private readonly resumeChip: HTMLButtonElement;
+  private readonly resumeTime: HTMLElement;
   private readonly cassette: HTMLElement;
   private readonly photoDeck: HTMLElement;
   private readonly photoDots: HTMLElement;
@@ -98,6 +102,8 @@ export class PlayerUI {
     this.modeLabel = must<HTMLElement>('#modeLabel');
     this.speedBtn = must<HTMLButtonElement>('#speedBtn');
     this.speedLabel = must<HTMLElement>('#speedLabel');
+    this.resumeChip = must<HTMLButtonElement>('#resumeChip');
+    this.resumeTime = must<HTMLElement>('#resumeTime');
     this.cassette = must<HTMLElement>('#cassette');
     this.photoDeck = must<HTMLElement>('#photoDeck');
     this.photoDots = must<HTMLElement>('#photoDots');
@@ -127,6 +133,11 @@ export class PlayerUI {
       const rect = this.progressBar.getBoundingClientRect();
       const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
       this.onSeekRatio(ratio);
+    });
+
+    this.resumeChip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.onResume();
     });
 
     /* ---- 拍立得：手机横滑条 → 滚动同步；桌面扇形 → 点击/拖动 ---- */
@@ -298,6 +309,15 @@ export class PlayerUI {
   updateCategoryTabs(category: Category): void {
     this.tabMusic.classList.toggle('active', category === 'music');
     this.tabStory.classList.toggle('active', category === 'story');
+  }
+
+  /**
+   * 显示/隐藏"继续播放"小纸片。
+   * @param seconds 上次听到的秒数（<=0 时隐藏）
+   */
+  showResume(seconds: number): void {
+    this.resumeChip.hidden = seconds <= 0;
+    if (seconds > 0) this.resumeTime.textContent = formatTime(seconds);
   }
 
   setControlsEnabled(enabled: boolean): void {

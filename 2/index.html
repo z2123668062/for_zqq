@@ -62,6 +62,10 @@
       <div class="reel reel-right" aria-hidden="true"></div>
       <div class="dock-label">
         <div id="title" class="dock-title">等待播放…</div>
+        <!-- 续播小纸片：有历史进度时出现，点击接着听 -->
+        <button id="resumeChip" class="resume-chip" type="button" title="接着上次的位置播放" hidden>
+          ♪ 继续 <span id="resumeTime">0:00</span>
+        </button>
         <div class="dock-time">
           <span id="currentTime">0:00</span>
           <span id="duration">0:00</span>

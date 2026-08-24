@@ -37,6 +37,13 @@ export class AudioPlayer {
     }
   }
 
+  /** 跳到指定秒数（续播用；时间非法时忽略） */
+  seekTo(seconds: number): void {
+    if (Number.isFinite(seconds) && seconds >= 0) {
+      this.audio.currentTime = seconds;
+    }
+  }
+
   /** 设置倍速（1.0 / 1.25 / …） */
   setRate(rate: number): void {
     this.audio.playbackRate = rate;

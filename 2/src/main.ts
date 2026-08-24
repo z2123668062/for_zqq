@@ -13,7 +13,7 @@ import { CATEGORIES, PHOTOS, PLAY_MODES, SPEED_STEPS } from './config';
 import { PlaybackQueue } from './queue';
 import { AudioPlayer } from './player';
 import { PlayerUI } from './ui';
-import { basename, fileExists, tryJson } from './utils';
+import { basename, clearProgress, fileExists, readProgress, tryJson, writeProgress } from './utils';
 import type { Category, Track } from './types';
 
 /* ------------------------------------------------------------------
@@ -68,6 +68,10 @@ function boot(): void {
   let currentCategory: Category = 'music';
   let selectedSpeed = 1.0;
   let lastUserActionAt = 0;
+  let pendingResume = 0; // 当前曲目可续播的秒数（0 = 无）
+  let lastSaveAt = 0;
+  /** 播放进度记忆（localStorage），按音频地址分别存储 */
+  const progressMap = readProgress();
 
   /** 用户连续操作（点击切歌）间隔不足 200ms 时忽略，防止 iOS 快速换源导致的卡顿 */
   const tooSoon = (): boolean => {
@@ -102,12 +106,17 @@ function boot(): void {
       ui.setTitle(cat.speedEnabled ? '未找到故事' : '未找到歌曲');
       ui.setControlsEnabled(false);
       ui.updatePlayState(false);
+      ui.showResume(0);
       return;
     }
 
     // 轻微防抖：连点"下一首"不重复触发切歌（iOS 上快速换源会卡）
     audio.load(track.src);
     ui.setTitle(track.title);
+    // 续播判断：听过 ≥10 秒、且离结尾还有 ≥10 秒 → 显示"继续播放"
+    const saved = progressMap[track.src];
+    pendingResume = saved && saved.t >= 10 && saved.d - saved.t > 10 ? saved.t : 0;
+    ui.showResume(pendingResume);
     // 预载下一首（故事分类只读 metadata，避免抢占流量）
     const nextTrack = queue.playlist[queue.nextIndex(1)];
     preloadNext(nextTrack?.src ?? '', cat.speedEnabled);
@@ -177,15 +186,54 @@ function boot(): void {
   ui.onCategory = (category) => {
     if (category !== currentCategory) switchCategory(category);
   };
+  ui.onResume = () => {
+    if (pendingResume <= 0) return;
+    audio.seekTo(pendingResume);
+    void audio.play();
+  };
+
+  /* ---- 进度记忆：节流保存 + 暂停/退出时即时保存 + 听完清档 ---- */
+  const saveProgress = (): void => {
+    const track = queue.current;
+    if (!track || audio.duration <= 0 || audio.currentTime < 1) return;
+    writeProgress(track.src, {
+      t: audio.currentTime,
+      d: audio.duration,
+      title: track.title,
+      at: Date.now(),
+    });
+  };
 
   /* ---- 音频事件 ---- */
   audio.onPlay(() => ui.updatePlayState(true));
-  audio.onPause(() => ui.updatePlayState(false));
-  audio.onTimeUpdate(() => ui.updateProgress(audio.currentTime, audio.duration));
+  audio.onPause(() => {
+    ui.updatePlayState(false);
+    saveProgress();
+  });
+  audio.onTimeUpdate(() => {
+    ui.updateProgress(audio.currentTime, audio.duration);
+    const now = Date.now();
+    if (now - lastSaveAt > 4000) {
+      lastSaveAt = now;
+      saveProgress();
+    }
+  });
   audio.onLoadedMetadata(() => ui.updateProgress(0, audio.duration));
+
+  // 退出/切后台时也保存一次，保证"听完一半关掉"也能续
+  window.addEventListener('pagehide', saveProgress);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') saveProgress();
+  });
 
   audio.onEnded(async () => {
     if (queue.length === 0) return;
+    // 听完整段：清掉进度记忆
+    if (queue.current) {
+      clearProgress(queue.current.src);
+      pendingResume = 0;
+      ui.showResume(0);
+    }
     const next = queue.onEndedNext();
     if (next === queue.currentIndex) {
       // 单曲循环：重播本曲

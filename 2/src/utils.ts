@@ -42,3 +42,54 @@ export async function fileExists(url: string): Promise<boolean> {
     return false;
   }
 }
+
+/* ------------------------------------------------------------------
+ * 播放进度记忆：localStorage 按音频地址分别保存（story/xxx.m4a）
+ * 下次打开同一段音频时可"继续播放"。
+ * ------------------------------------------------------------------ */
+
+export interface ProgressEntry {
+  /** 上次播放位置（秒） */
+  t: number;
+  /** 当时的音频总时长（秒），用于判断是否接近结尾 */
+  d: number;
+  /** 曲目名（方便调试） */
+  title: string;
+  /** 更新时间戳 */
+  at: number;
+}
+
+const PROGRESS_KEY = 'qingting:progress';
+
+type ProgressStore = Record<string, ProgressEntry>;
+
+/** 读取全部进度（损坏/不存在时返回空对象，不抛错） */
+export function readProgress(): ProgressStore {
+  try {
+    return JSON.parse(localStorage.getItem(PROGRESS_KEY) ?? '{}') as ProgressStore;
+  } catch {
+    return {};
+  }
+}
+
+/** 写入单个音频的进度 */
+export function writeProgress(src: string, entry: ProgressEntry): void {
+  try {
+    const store = readProgress();
+    store[src] = entry;
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(store));
+  } catch {
+    /* 隐私模式等场景下 localStorage 不可用：静默降级 */
+  }
+}
+
+/** 删除某个音频的进度（听完后调用） */
+export function clearProgress(src: string): void {
+  try {
+    const store = readProgress();
+    delete store[src];
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(store));
+  } catch {
+    /* 同上：静默降级 */
+  }
+}

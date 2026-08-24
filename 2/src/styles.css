@@ -713,6 +713,26 @@ button:focus-visible {
   letter-spacing: 1px;
 }
 
+/* 续播小纸片：点一下从上次位置接着听 */
+.resume-chip {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 1px 9px;
+  font-family: var(--font-hand);
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  color: color-mix(in srgb, var(--accent-1) 85%, #7a6650);
+  background: rgba(255, 253, 244, 0.9);
+  border: 1px dashed color-mix(in srgb, var(--accent-1) 55%, #d9cbaa);
+  border-radius: 999px;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.resume-chip:hover {
+  transform: scale(1.05) rotate(-1deg);
+  background: #fff;
+}
+
 /* 迷你按钮 */
 .dock .paper-btn {
   width: 38px;
